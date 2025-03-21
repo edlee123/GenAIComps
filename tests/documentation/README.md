@@ -11,6 +11,11 @@ Please review `readme_list.txt` to confirm READMEs you'd like to review.
 
 # 2. Define LLM variables
 
+
+You'll need to access an LLM endpoint to review your documents.  E.g., www.OpenRouter.ai, or huggingface.co.
+
+Then define:
+
 ```
 export LLM_MODEL_ID="google/gemini-2.0-pro-exp-02-05:free"
 export LLM_ENDPOINT=""  # e.g. https://openrouter.ai/api 
