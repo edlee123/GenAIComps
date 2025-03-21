@@ -4,11 +4,10 @@
 # 1. Define list of READMEs to review
 
 ```
-python3 find_readme.py --dir ~/Projects/forked/GenAIComps > readme_list.txt
-# Please review this list that you'd like to review
-
-
+python3 find_readme.py --dir [path to GenAIComps]  > readme_list.txt
 ```
+
+Please review `readme_list.txt` to confirm READMEs you'd like to review.
 
 # 2. Define LLM variables
 
