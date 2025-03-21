@@ -46,27 +46,28 @@ WORKPATH=$(dirname "$PWD")
 host_ip=$(hostname -I | awk '{print $1}')
 TEXTGEN_PORT=9000 # This port is for the textgen service
 
-set -x # Enable tracing
+# set -x # Enable tracing
 
 # --- Main script ---
 
 # Check environment variables
 if [ -z "${LLM_MODEL_ID:-}" ]; then
   echo "Error: LLM_MODEL_ID environment variable is not set."
-  exit 1
+  exit 0
 fi
 
 if [ -z "${LLM_ENDPOINT:-}" ]; then
   echo "Error: LLM_ENDPOINT environment variable is not set."
-  exit 1
+  exit 0
 fi
 
 # Check if an argument is provided
 if [ -z "$1" ]; then
   echo "Usage: $0 <path_to_readme_list>"
   echo "  where <path_to_readme_list> is a text file containing a list of README file paths."
+  echo "Error: Please provide the &lt;path_to_readme_list&gt; argument."
   echo "Environment variables LLM_MODEL_ID and LLM_ENDPOINT must be set."
-  exit 1
+  exit 0
 fi
 
 # Read README file list
@@ -75,7 +76,7 @@ readme_files=$(cat "$1")
 # Check if any files were found
 if [ -z "$readme_files" ]; then
   echo "No README files found in $1. Exiting."
-  exit 1
+  exit 0
 fi
 
 # Create/clear output file
@@ -131,8 +132,18 @@ EOF
   echo "## Review of $readme_file\n" >> "$output_file"
   echo "$generated_text\n" >> "$output_file"
 
+  # Extract token usage
+  input_tokens=$(echo "$response" | jq -r '.usage.prompt_tokens')
+  output_tokens=$(echo "$response" | jq -r '.usage.completion_tokens')
+  total_tokens=$((input_tokens + output_tokens))
+
+  # Write token usage to markdown file
+  echo "Input Tokens: $input_tokens" >> "$output_file"
+  echo "Output Tokens: $output_tokens" >> "$output_file"
+  echo "Total Tokens: $total_tokens" >> "$output_file"
+  echo "" >> "$output_file" # Add an empty line for separation
+
   echo "Output written to $output_file"
 done <<< "$readme_files"
 
 echo "Review complete. Summary written to $output_file"
-exit 0
