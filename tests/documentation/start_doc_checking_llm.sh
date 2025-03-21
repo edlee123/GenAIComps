@@ -1,16 +1,28 @@
 #!/bin/bash
 
 # Set up text generation service
-# Run the following to set up before running script
-# export LLM_MODEL_ID="google/gemini-2.0-pro-exp-02-05:free"
-# export OPENAI_API_KEY=""
-# export LLM_ENDPOINT=""
 
 WORKPATH=$(dirname "$PWD")
 host_ip=$(hostname -I | awk '{print $1}')
 TEXTGEN_PORT=9000 # This port is for the textgen service
 
 set -x # Enable tracing
+
+# Check environment variables
+if [ -z "${LLM_MODEL_ID:-}" ]; then
+  echo "Error: LLM_MODEL_ID environment variable is not set."
+  exit 1
+fi
+
+if [ -z "${LLM_ENDPOINT:-}" ]; then
+  echo "Error: LLM_ENDPOINT environment variable is not set."
+  exit 1
+fi
+
+if [ -z "${OPENAI_API_KEY:-}" ]; then
+  echo "Error: OPENAI_API_KEY environment variable is not set."
+  exit 1
+fi
 
 # Start text generation service (adapted from the example script)
 # We will NOT start a textgen service, but instead use environment variables
@@ -27,5 +39,7 @@ function start_textgen() {
         exit 1
     fi
 
-    sleep 30 # Wait for textgen service to start (increased from 20)
 }
+
+set +x # Disable tracing
+start_textgen
