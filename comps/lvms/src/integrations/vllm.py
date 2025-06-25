@@ -29,7 +29,7 @@ logflag = os.getenv("LOGFLAG", False)
 # The maximum number of images that should be sent to the LVM
 # max_images = int(os.getenv("MAX_IMAGES", 1))
 LLM_MODEL_ID = os.getenv("LLM_MODEL_ID", "llava-hf/llava-1.5-7b-hf")
-
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "EMPTY")
 
 class ChatTemplate:
 
@@ -121,7 +121,7 @@ class OpeaVllmLvm(OpeaComponent):
         # https://github.com/huggingface/huggingface_hub/blob/v0.29.1/src/huggingface_hub/inference/_providers/hf_inference.py#L87
         # latest AsyncInferenceClient has model hardcoded issues to "tgi"
         # so we use OpenAI client
-        self.lvm_client = OpenAI(api_key="EMPTY", base_url=f"{self.base_url}/v1")
+        self.lvm_client = OpenAI(api_key=OPENAI_API_KEY, base_url=f"{self.base_url}/v1")
         health_status = self.check_health()
         # if logflag:
         #     logger.info(f"MAX_IMAGES: {max_images}")
